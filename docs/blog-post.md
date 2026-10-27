@@ -213,6 +213,48 @@ DB 테이블을 만들기 전에도 전적 검색은 동작했다. 캐시 조회
 | 매치 20개 | 순차 요청, 매번 새로 | 5개씩 병렬 + DB 캐시 |
 | 비밀 정보 | `conf.py` (공개 저장소에 커밋됨) | `wrangler secret` |
 
+### 화면 비교: 2020 vs 2026
+
+디자인은 일부러 바꾸지 않았다. 같은 MDB Bootstrap CSS를 그대로 쓰고, Jinja2 템플릿을 JSX로 한 줄씩 옮겼다.
+
+#### 메인 화면
+| 2020 (Flask) | 2026 (Workers) |
+|---|---|
+| ![2020 메인](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FciirYQ%2FbtqBFwKvuJE%2FdTNEc4cMDu2zcGL3kgK6k0%2Fimg.png) | ![2026 메인](screenshots/2026/01-home.png) |
+
+- 검색창이 소환사 이름에서 **Riot ID(`이름#태그`)** 로 바뀌었다.
+- 라인별 챔피언 추천은 op.gg 크롤링 대신 우리 사이트에서 검색된 경기로 집계한다.
+
+![라인별 챔피언 추천](screenshots/2026/02-lane-recommend.png)
+
+#### 소환사 정보
+| 2020 | 2026 |
+|---|---|
+| ![2020 소환사 정보](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FoVqCU%2FbtqBGZ58UYo%2FBdn9gNURZQ3UUjh2mXake0%2Fimg.png) | ![2026 소환사 정보](screenshots/2026/04-summoner-top.png) |
+
+- 티어 엠블럼, MOST ONE, 최근 경기 K/D/A 그래프, 최근 20게임 표 구성은 그대로다.
+- 원본에 없던 것: Riot ID 태그, 프로필 아이콘, 자유랭크, 승률(%), 드래곤 처치 수, 승패에 따른 행 색상
+
+전체 페이지: [05-summoner-full.png](screenshots/2026/05-summoner-full.png) · 모바일: [09-summoner-mobile.png](screenshots/2026/09-summoner-mobile.png)
+
+#### 나만의 팁
+| 2020 | 2026 |
+|---|---|
+| ![2020 나만의 팁](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FJdNXs%2FbtqBFvLI0qK%2FDRelY6cSOwarQbYvbmyv80%2Fimg.png) | ![2026 나만의 팁 글쓰기](screenshots/2026/07-tips-write.png) |
+
+- 유튜브 주소는 `watch?v=` 뒤의 ID만 넣던 방식에서, 전체 주소(`youtu.be` 포함)를 붙여 넣어도 되도록 바꿨다.
+
+#### 유저매칭
+| 2020 | 2026 |
+|---|---|
+| ![2020 유저매칭](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FtF6Py%2FbtqBIHjocJM%2FinJKjkuyNA9iJYeaPyeKM0%2Fimg.png) | ![2026 유저매칭](screenshots/2026/08-matching.png) |
+
+- 원본에서 비어 있던 "승률" 칸이 Riot API 솔로랭크 전적으로 채워진다.
+
+#### 로그인 / 오류 화면 (2026)
+![로그인 모달](screenshots/2026/03-login-modal.png)
+![없는 소환사](screenshots/2026/06-no-user.png)
+
 ## 7. 바이브 코딩을 해 보고 느낀 점
 
 - **결정은 먼저, 구현은 한 번에.** 중간에 끊고 "전부 물어보고 한 번에"로 바꾼 뒤부터 결과물이 흔들리지 않았다.
