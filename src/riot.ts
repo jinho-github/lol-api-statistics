@@ -8,10 +8,12 @@ export type LeagueEntry = {
   queueType: 'RANKED_SOLO_5x5' | 'RANKED_FLEX_SR' | string;
   tier: string;
   rank: string;
+  puuid?: string;
   leaguePoints: number;
   wins: number;
   losses: number;
 };
+export type Mastery = { championId: number; championLevel: number; championPoints: number; lastPlayTime: number };
 
 export type Participant = {
   puuid: string;
@@ -20,7 +22,6 @@ export type Participant = {
   teamId: 100 | 200;
   teamPosition: string;
   championId: number;
-  championName: string;
   champLevel: number;
   kills: number;
   deaths: number;
@@ -31,20 +32,32 @@ export type Participant = {
   goldEarned: number;
   visionScore: number;
   largestMultiKill: number;
-  totalDamageDealt: number;
   totalDamageDealtToChampions: number;
-  magicDamageDealtToChampions: number;
-  physicalDamageDealtToChampions: number;
   totalDamageTaken: number;
-  totalHeal: number;
-  perks: { styles: { description: 'primaryStyle' | 'subStyle'; style: number }[] };
+  summoner1Id: number;
+  summoner2Id: number;
+  item0: number;
+  item1: number;
+  item2: number;
+  item3: number;
+  item4: number;
+  item5: number;
+  item6: number;
+  perks: { styles: { description: 'primaryStyle' | 'subStyle'; style: number; selections: { perk: number }[] }[] };
+  challenges?: {
+    killParticipation?: number;
+    teamDamagePercentage?: number;
+    laneMinionsFirst10Minutes?: number;
+    soloKills?: number;
+  };
 };
 
 type Objective = { first: boolean; kills: number };
 export type Team = {
   teamId: 100 | 200;
   win: boolean;
-  objectives: Record<'baron' | 'dragon' | 'tower' | 'inhibitor' | 'riftHerald' | 'champion', Objective>;
+  bans: { championId: number }[];
+  objectives: Record<'baron' | 'dragon' | 'tower' | 'inhibitor' | 'riftHerald' | 'champion' | 'horde', Objective>;
 };
 
 export type Match = {
@@ -52,6 +65,7 @@ export type Match = {
   info: {
     gameCreation: number;
     gameDuration: number;
+    gameVersion: string;
     queueId: number;
     participants: Participant[];
     teams: Team[];
@@ -65,12 +79,13 @@ export class RiotError extends Error {
 }
 
 export const SOLO_RANK_QUEUE = 420;
+export const SOLO_QUEUE = 'RANKED_SOLO_5x5';
 
 export class RiotClient {
   constructor(
     private apiKey: string,
     private region = 'asia', // account-v1, match-v5
-    private platform = 'kr', // summoner-v4, league-v4
+    private platform = 'kr', // summoner-v4, league-v4, champion-mastery-v4
   ) {}
 
   private async get<T>(host: string, path: string, retries = 2): Promise<T> {
@@ -98,6 +113,21 @@ export class RiotClient {
 
   leagues(puuid: string) {
     return this.get<LeagueEntry[]>(this.platform, `/lol/league/v4/entries/by-puuid/${puuid}`);
+  }
+
+  masteries(puuid: string, count = 10) {
+    return this.get<Mastery[]>(this.platform, `/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top?count=${count}`);
+  }
+
+  // 아이언~다이아: 티어/디비전별 페이지 조회
+  leagueEntries(tier: string, division: string, page = 1) {
+    return this.get<LeagueEntry[]>(this.platform, `/lol/league/v4/entries/${SOLO_QUEUE}/${tier}/${division}?page=${page}`);
+  }
+
+  // 마스터 이상은 리그 하나에 전원이 들어 있다
+  apexLeague(tier: 'MASTER' | 'GRANDMASTER' | 'CHALLENGER') {
+    const name = { MASTER: 'masterleagues', GRANDMASTER: 'grandmasterleagues', CHALLENGER: 'challengerleagues' }[tier];
+    return this.get<{ entries: LeagueEntry[] }>(this.platform, `/lol/league/v4/${name}/by-queue/${SOLO_QUEUE}`);
   }
 
   matchIds(puuid: string, count = 20, queue = SOLO_RANK_QUEUE) {

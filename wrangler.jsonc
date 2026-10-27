@@ -6,11 +6,12 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": "./public" },
   "routes": [{ "pattern": "wgm.nori.day", "custom_domain": true }],
+  "triggers": { "crons": ["*/5 * * * *"] },
   "observability": { "enabled": true },
   "vars": {
     "RIOT_REGION": "asia",
     "RIOT_PLATFORM": "kr"
   }
   // 비밀 값은 `wrangler secret put` 으로 등록 (로컬은 .dev.vars)
-  // RIOT_API_KEY, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, RIOT_VERIFICATION(선택)
+  // RIOT_API_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY, RIOT_VERIFICATION(선택)
 }
