@@ -62,5 +62,14 @@
 
 ### 결과
 - GitHub: https://github.com/jinho-github/lol-api-statistics (비공개)
-- 배포: https://lol-api-statistics.jinho021712.workers.dev
+- 배포: https://wgm.nori.day (workers.dev 주소: https://lol-api-statistics.jinho021712.workers.dev)
 - `Hide on bush#KR1` 검색: 로컬 1.5초 / 운영 2.8초 (캐시 없이 20경기)
+
+## 5. 검증과 도메인
+> 사용자: "원래 wgm 였지? 우정머?" → 둘 다 "우리 정글 뭐함?"의 줄임말 (WGM.GG = 로고, 우정머 = 한글 별칭)
+> 사용자: "sql 은 추가했고 wgm.nori.day 로 도메인 연결해둠"
+
+- 매치 캐시 동작 확인: 같은 검색 1.6초 → 0.8초, match_cache 20행 / match_participants 200행
+- RLS 확인: 비로그인 사용자는 팁 작성 불가(42501), match_cache 조회 시 빈 결과
+- `wrangler.jsonc`에 `wgm.nori.day` custom_domain 라우트 추가 → 이후 배포에도 도메인 유지
+- **막힘: 회원가입 실패** — `Email address "...@example.com" is invalid`. Supabase 기본 SMTP는 프로젝트 팀원 이메일로만 발송함 (시간당 발송 수도 제한) → 이메일 인증 끄기 또는 커스텀 SMTP 필요

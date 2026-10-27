@@ -67,8 +67,7 @@ Rate limit handling
 We do not sell data, we do not offer any paid features, and we follow the
 Riot Games developer policies including the legal disclaimer on every page.
 
-Tech stack: Python Flask, MongoDB Atlas, Bootstrap. Source code:
-https://github.com/jinho-github/<repository>
+Tech stack: Python Flask, MongoDB Atlas, Bootstrap. Website: https://wgm.nori.day
 ```
 
 <details>
@@ -95,10 +94,12 @@ Default Group
 
 ### 제품 URL
 
-- **Personal**: GitHub 저장소 주소를 써도 돼요. 예: `https://github.com/jinho-github/lol-api-statistics`
-- **Production**: 배포한 사이트 주소를 써요. 예: `https://wgm-lol.onrender.com`
-  - 심사 기간 동안 사이트가 접속되는 상태여야 해요.
-  - Render 무료 요금제는 잠들었다가 깨어나는 데 시간이 걸려요. 심사 기간에는 미리 한 번 접속해 두면 좋아요.
+```
+https://wgm.nori.day
+```
+
+- 저장소가 비공개라 심사자가 볼 수 없으니, Personal과 Production 모두 배포한 사이트 주소를 적어요.
+- Cloudflare Workers는 잠들지 않아서 심사 기간에 따로 깨워 둘 필요가 없어요.
 
 ### 제품 게임 초점
 
