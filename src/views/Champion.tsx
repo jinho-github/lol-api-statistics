@@ -71,8 +71,9 @@ export function Champion({
   const position = d?.position ?? null;
   const points = championPoints(full, d, dd);
   const matchups = (d?.matchups ?? []).filter((m) => m.games >= 3);
-  const easy = [...matchups].sort((a, b) => wr(b) - wr(a) || b.games - a.games).slice(0, 5);
-  const hard = [...matchups].sort((a, b) => wr(a) - wr(b) || b.games - a.games).slice(0, 5);
+  // 데이터가 적을 때 같은 챔피언이 양쪽에 동시에 나오지 않도록 50%를 기준으로 나눈다
+  const easy = matchups.filter((m) => wr(m) > 0.5).sort((a, b) => wr(b) - wr(a) || b.games - a.games).slice(0, 5);
+  const hard = matchups.filter((m) => wr(m) < 0.5).sort((a, b) => wr(a) - wr(b) || b.games - a.games).slice(0, 5);
   const core = (d?.items ?? []).filter((i) => dd.isCoreItem(i.id) && !dd.isBoots(i.id)).slice(0, 6);
   const boots = (d?.items ?? []).filter((i) => dd.isCoreItem(i.id) && dd.isBoots(i.id)).slice(0, 2);
   const durationBuckets = [
@@ -228,7 +229,10 @@ export function Champion({
                   <span style="display:flex;gap:10px;align-items:center" class="ink">
                     <img class="icon" style="background:var(--ink)" src={dd.runeImg(k.id)} alt="" />
                     <img class="icon xs" src={dd.runeImg(k.sub)} alt="" />
-                    {dd.rune(k.id)?.name}
+                    <span>
+                      {dd.rune(k.id)?.name}
+                      <span class="small muted"> · {dd.rune(k.sub)?.name}</span>
+                    </span>
                   </span>
                   <span class="num small">
                     {pct(k.games / Math.max(1, d!.games), 0)} · <span class={wr(k) >= 0.5 ? 'up' : 'down'}>{pct(wr(k), 0)}</span>
@@ -322,7 +326,7 @@ function MatchupCard({
   return (
     <div class="card pad-sm">
       <p class="title-sm">{title}</p>
-      {rows.length === 0 && <p class="muted small" style="margin-top:12px">같은 라인 상대 전적이 아직 부족해요 (3게임 이상).</p>}
+      {rows.length === 0 && <p class="muted small" style="margin-top:12px">해당하는 상대가 아직 없어요 (같은 라인 3게임 이상).</p>}
       <table class="rows" style="margin-top:8px">
         <tbody>
           {rows.map((m) => (

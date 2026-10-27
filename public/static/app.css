@@ -141,9 +141,14 @@ p { margin: 0; }
 /* 다크 히어로 위에 겹쳐 놓는 제품 UI 카드 */
 .mock-stack { position: relative; min-height: 380px; }
 .mock { background: var(--surface-dark-elevated); color: var(--on-dark); border-radius: var(--r-xl); padding: 28px; border: 1px solid #23262c; }
-.mock-stack .mock:first-child { position: relative; z-index: 1; width: 88%; }
-.mock-stack .mock + .mock { position: absolute; right: 0; bottom: 0; width: 62%; z-index: 2; transform: rotate(-2deg); background: #1d2026; }
-@media (max-width: 1023px) { .mock-stack { min-height: 0; } .mock-stack .mock:first-child { width: 100%; } .mock-stack .mock + .mock { display: none; } }
+/* 두 번째 카드는 첫 카드의 아래쪽 여백 위에만 겹쳐서 데이터를 가리지 않게 한다 */
+.mock-stack .mock:first-child { position: relative; z-index: 1; width: 88%; padding-bottom: 120px; }
+.mock-stack .mock + .mock { position: absolute; right: 0; bottom: -48px; width: 56%; z-index: 2; transform: rotate(-2deg); background: #1d2026; }
+@media (max-width: 1023px) {
+  .mock-stack { min-height: 0; }
+  .mock-stack .mock:first-child { width: 100%; padding-bottom: 28px; }
+  .mock-stack .mock + .mock { position: static; width: 100%; transform: none; margin-top: 16px; }
+}
 .mock .row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #23262c; }
 .mock .row:first-of-type { border-top: 0; }
 
@@ -185,6 +190,8 @@ a.card:hover { text-decoration: none; box-shadow: var(--shadow); }
 .rows th { text-align: left; font: 600 12px/1.5 var(--font); color: var(--muted); padding: 0 12px 12px; border-bottom: 1px solid var(--hairline); white-space: nowrap; }
 .rows td { padding: 14px 12px; border-bottom: 1px solid var(--hairline-soft); color: var(--ink); vertical-align: middle; }
 .rows tr:last-child td { border-bottom: 0; }
+.rows td.up { color: var(--up); }
+.rows td.down { color: var(--down); }
 .rows .r { text-align: right; }
 .rows th.r { text-align: right; }
 .rows .who { display: flex; align-items: center; gap: 12px; min-width: 160px; }
@@ -203,8 +210,8 @@ a.card:hover { text-decoration: none; box-shadow: var(--shadow); }
 .bar.dark { background: #2a2d33; }
 
 /* 최근 경기 승패 점 */
-.streak { display: flex; gap: 4px; flex-wrap: wrap; }
-.streak span { width: 14px; height: 28px; border-radius: var(--r-xs); background: var(--hairline); }
+.streak { display: flex; gap: 4px; }
+.streak span { flex: 1 1 0; max-width: 14px; min-width: 6px; height: 28px; border-radius: var(--r-xs); background: var(--hairline); }
 .streak span.w { background: var(--primary); }
 .streak span.l { background: var(--muted-soft); }
 

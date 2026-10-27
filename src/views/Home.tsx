@@ -54,7 +54,7 @@ export function Home({ dd, rows, summary }: { dd: DDragon; rows: TierListRow[]; 
                         <a href={`/champions/${dd.championSlug(best.champion_id)}?position=${position.key}`} style="color:var(--on-dark);flex:1">
                           {dd.championName(best.champion_id)}
                         </a>
-                        <span class="num up">{pct(best.wins / best.games)}</span>
+                        <span class={`num ${best.wins / best.games >= 0.5 ? 'up' : 'down'}`}>{pct(best.wins / best.games)}</span>
                       </>
                     ) : (
                       <span style="flex:1;color:var(--on-dark-soft)">데이터 수집 중</span>
