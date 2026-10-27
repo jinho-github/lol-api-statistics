@@ -45,6 +45,9 @@ export const isPosition = (p: string | undefined): p is Position => POSITIONS.so
 // 표본이 적은 챔피언의 승률을 50% 쪽으로 당겨서 순위가 튀지 않게 한다 (베이지안 평균)
 export const adjustedWinRate = (wins: number, games: number, prior = 30) => (wins + prior * 0.5) / (games + prior);
 
+// 10게임 미만은 보정해도 우연이 커서 등급을 매기지 않는다
+export const MIN_GRADE_GAMES = 10;
+
 export function grade(adj: number) {
   if (adj >= 0.53) return 'S';
   if (adj >= 0.515) return 'A';
