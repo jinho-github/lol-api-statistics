@@ -263,6 +263,8 @@ DB 테이블을 만들기 전에도 전적 검색은 동작했다. 캐시 조회
 - **AI가 못 보는 화면은 API로 확인하게 하자.** 대시보드 설정이 제대로 됐는지 AI가 공개 설정 API로 확인해 준 덕분에 "저장했는데 왜 안 되지?"를 빨리 끝낼 수 있었다.
 - **6년 전 코드의 가장 큰 문제는 기술이 아니라 보안이었다.** 공개 저장소에 비밀번호를 올려 둔 걸 AI가 가장 먼저 찾아냈다.
 
+> 다음 글: [2편 — 로그인을 지우고 분석 플랫폼으로 갈아엎기](blog-post-2.md)
+
 ---
 
 *WGM.GG isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.*

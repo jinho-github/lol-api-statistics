@@ -9,6 +9,7 @@ export type LeagueEntry = {
   tier: string;
   rank: string;
   puuid?: string;
+  inactive?: boolean;
   leaguePoints: number;
   wins: number;
   losses: number;
@@ -130,8 +131,10 @@ export class RiotClient {
     return this.get<{ entries: LeagueEntry[] }>(this.platform, `/lol/league/v4/${name}/by-queue/${SOLO_QUEUE}`);
   }
 
-  matchIds(puuid: string, count = 20, queue = SOLO_RANK_QUEUE) {
-    return this.get<string[]>(this.region, `/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=${queue}&count=${count}`);
+  // startTime(초): 이 시각 이후 경기만. 오래 쉰 플레이어의 몇 달 전 경기를 수집하지 않으려고 쓴다
+  matchIds(puuid: string, count = 20, queue = SOLO_RANK_QUEUE, startTime?: number) {
+    const since = startTime ? `&startTime=${Math.floor(startTime)}` : '';
+    return this.get<string[]>(this.region, `/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=${queue}&count=${count}${since}`);
   }
 
   match(matchId: string) {
