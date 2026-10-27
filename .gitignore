@@ -1,0 +1,12 @@
+.vscode
+env
+.venv
+conf.ini
+conf.py
+.env
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+.wrangler/
+.dev.vars

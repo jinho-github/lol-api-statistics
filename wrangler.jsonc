@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lol-api-statistics",
+  "main": "src/index.tsx",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "./public" },
+  "observability": { "enabled": true },
+  "vars": {
+    "RIOT_REGION": "asia",
+    "RIOT_PLATFORM": "kr"
+  }
+  // 비밀 값은 `wrangler secret put` 으로 등록 (로컬은 .dev.vars)
+  // RIOT_API_KEY, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, RIOT_VERIFICATION(선택)
+}
