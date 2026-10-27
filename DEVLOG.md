@@ -73,3 +73,12 @@
 - RLS 확인: 비로그인 사용자는 팁 작성 불가(42501), match_cache 조회 시 빈 결과
 - `wrangler.jsonc`에 `wgm.nori.day` custom_domain 라우트 추가 → 이후 배포에도 도메인 유지
 - **막힘: 회원가입 실패** — `Email address "...@example.com" is invalid`. Supabase 기본 SMTP는 프로젝트 팀원 이메일로만 발송함 (시간당 발송 수도 제한) → 이메일 인증 끄기 또는 커스텀 SMTP 필요
+
+## 6. 회원가입 해결과 전체 흐름 테스트
+> 사용자: "Supabase에서 Confirm email 꺼두었어. 로그인·팁·매칭 테스트하고 블로그 TODO도 채워줘."
+> → "Confirm email 끄고 Save 눌렀어. 다시 테스트해줘." → "Enable Email provider는 켜고 Confirm email만 끄고 Save 했어. 다시 테스트해줘."
+
+- 오류 변화: `example.com is invalid`(MX 없음) → `email rate limit exceeded`(Confirm email 아직 켜짐) → `Email signups are disabled`(Email provider를 끔) → 해결
+- `/auth/v1/settings`의 `mailer_autoconfirm`으로 반영 여부 확인. Save 후 약 15초 뒤 true
+- 로컬 E2E 18개 항목 통과 (가입/로그인/로그아웃/오류 안내, 팁 작성·권한·유튜브 검증·홈 노출, 매칭 등록·Riot ID 검증·전적 저장)
+- 테스트하면서 운영 DB에 남은 데이터: 팁 "E2E 테스트 팁: 미드 라인전 기본", 테스트 계정의 매칭 정보
