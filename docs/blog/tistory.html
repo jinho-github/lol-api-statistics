@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>티스토리 붙여넣기용 · WGM.GG 후기</title>
+<style>
+  :root { --ink: #0a0b0d; --body: #333; --muted: #7c828a; --line: #dee1e6; --soft: #f5f6f8; --blue: #0052ff; }
+  body { margin: 0; background: #eef0f3; color: var(--body); font-family: -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+  .bar { position: sticky; top: 0; z-index: 2; background: var(--ink); color: #fff; padding: 12px 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .bar p { margin: 0 8px 0 0; font-size: 14px; flex: 1 1 280px; }
+  .bar button { border: 0; border-radius: 100px; padding: 10px 18px; font: 600 14px/1 inherit; cursor: pointer; background: var(--blue); color: #fff; }
+  .bar button.secondary { background: #2a2d33; }
+  .bar .status { font-size: 13px; color: #a8acb3; flex-basis: 100%; margin: 0; }
+  .paper { max-width: 820px; margin: 24px auto; background: #fff; padding: 40px 32px; border-radius: 16px; box-sizing: border-box; }
+  @media (max-width: 640px) { .paper { margin: 0; border-radius: 0; padding: 24px 16px; } }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <p>티스토리 글쓰기 → <b>기본 모드</b>에서는 "서식째 복사"를, <b>HTML 모드</b>에서는 "HTML 복사"를 누른 뒤 붙여 넣으세요. 이미지는 wgm.nori.day에 올라가 있어 같이 들어가요.</p>
+  <button type="button" id="copy-rich">서식째 복사</button>
+  <button type="button" id="copy-html" class="secondary">HTML 복사</button>
+  <p class="status" id="status" aria-live="polite"></p>
+</div>
+
+<div class="paper">
+<!-- ↓ 여기부터 본문 (티스토리에 들어가는 부분) -->
+<article id="post">
+
+<h2 style="font-size:26px;line-height:1.35;color:#0a0b0d;">6년 전 롤 전적 사이트를 AI로 뜯어고쳐 본 후기, 그리고 서비스는 하지 않기로 한 이유</h2>
+
+<p style="line-height:1.8;">2020년 2월, 대학생 때 Python Flask로 롤 전적 검색 사이트 <b>WGM.GG</b>(우리 정글 뭐함?, 줄여서 우정머)를 만들었다.<br>
+(<a href="https://yeowool0217.tistory.com/581">만들기 0편</a> · <a href="https://yeowool0217.tistory.com/580">1편</a> · <a href="https://yeowool0217.tistory.com/583">2편</a> · <a href="https://yeowool0217.tistory.com/622">배포편</a>)</p>
+
+<p style="line-height:1.8;">6년 만에 이 코드를 꺼내서 <b>Claude Code와 바이브 코딩으로</b> 고쳐 봤다. 결과부터 말하면 한 번의 작업 세션, <b>약 3시간 20분</b> 만에 두 가지를 끝냈다.</p>
+<ol style="line-height:1.8;">
+  <li>예전 기능을 그대로 되살려서 내 도메인에 배포했다.</li>
+  <li>로그인을 전부 걷어내고, 분석·챔피언 추천·장단점에 집중한 사이트로 갈아엎었다.</li>
+</ol>
+
+<blockquote style="border-left:4px solid #0052ff;margin:16px 0;padding:8px 16px;background:#f5f6f8;">사이트: <a href="https://wgm.nori.day">https://wgm.nori.day</a></blockquote>
+
+<hr>
+
+<h3 style="font-size:21px;color:#0a0b0d;">한눈에 보는 변화</h3>
+
+<table style="width:100%;border-collapse:collapse;font-size:15px;">
+  <thead>
+    <tr>
+      <th style="border:1px solid #dee1e6;padding:8px 10px;background:#f5f6f8;text-align:left;"></th>
+      <th style="border:1px solid #dee1e6;padding:8px 10px;background:#f5f6f8;text-align:left;">2020</th>
+      <th style="border:1px solid #dee1e6;padding:8px 10px;background:#f5f6f8;text-align:left;">2026</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="border:1px solid #dee1e6;padding:8px 10px;"><b>언어 / 실행 환경</b></td><td style="border:1px solid #dee1e6;padding:8px 10px;">Python Flask, AWS EC2</td><td style="border:1px solid #dee1e6;padding:8px 10px;">TypeScript + Hono, Cloudflare Workers</td></tr>
+    <tr><td style="border:1px solid #dee1e6;padding:8px 10px;"><b>DB</b></td><td style="border:1px solid #dee1e6;padding:8px 10px;">MongoDB Atlas</td><td style="border:1px solid #dee1e6;padding:8px 10px;">Supabase (Postgres)</td></tr>
+    <tr><td style="border:1px solid #dee1e6;padding:8px 10px;"><b>로그인</b></td><td style="border:1px solid #dee1e6;padding:8px 10px;">이메일 회원가입 (bcrypt 직접 구현)</td><td style="border:1px solid #dee1e6;padding:8px 10px;">없음</td></tr>
+    <tr><td style="border:1px solid #dee1e6;padding:8px 10px;"><b>Riot API</b></td><td style="border:1px solid #dee1e6;padding:8px 10px;">소환사 이름 검색, match/v4 (지금은 폐지)</td><td style="border:1px solid #dee1e6;padding:8px 10px;">Riot ID 검색, match-v5</td></tr>
+    <tr><td style="border:1px solid #dee1e6;padding:8px 10px;"><b>챔피언 추천</b></td><td style="border:1px solid #dee1e6;padding:8px 10px;">op.gg 크롤링</td><td style="border:1px solid #dee1e6;padding:8px 10px;">직접 모은 경기 데이터로 집계</td></tr>
+    <tr><td style="border:1px solid #dee1e6;padding:8px 10px;"><b>데이터</b></td><td style="border:1px solid #dee1e6;padding:8px 10px;">검색할 때마다 새로 요청</td><td style="border:1px solid #dee1e6;padding:8px 10px;">5분마다 티어별 자동 수집 + 저장</td></tr>
+    <tr><td style="border:1px solid #dee1e6;padding:8px 10px;"><b>디자인</b></td><td style="border:1px solid #dee1e6;padding:8px 10px;">MDB Bootstrap</td><td style="border:1px solid #dee1e6;padding:8px 10px;">DESIGN.md 기반 자체 CSS</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h3 style="font-size:21px;color:#0a0b0d;">바뀐 사이트 둘러보기</h3>
+
+<h4 style="font-size:18px;color:#0a0b0d;">메인</h4>
+<p><img src="https://wgm.nori.day/static/blog/01-home.jpg" alt="메인 화면" style="max-width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+<p style="line-height:1.8;">Riot ID(이름#태그)만 넣으면 바로 분석한다. 오른쪽 카드에는 최근 2주 동안 라인별로 승률이 가장 높은 챔피언과, 지금까지 모은 경기 수가 나온다.</p>
+
+<h4 style="font-size:18px;color:#0a0b0d;">소환사 분석</h4>
+<p><img src="https://wgm.nori.day/static/blog/02-summoner.jpg" alt="소환사 분석 화면" style="max-width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+<ul style="line-height:1.8;">
+  <li>최근 솔로랭크 20게임에서 KDA, 킬 관여율, 분당 CS·골드·피해량, 시야 점수, 데스를 계산한다.</li>
+  <li>이 값을 <b>같은 티어·같은 라인 평균</b>과 비교해서, 10% 이상 앞서면 장점, 뒤처지면 약점으로 보여 준다. 약점에는 개선 팁이 붙는다.</li>
+  <li>추천 챔피언은 "지금 성적이 좋은 챔피언", "내 티어에서 승률이 높고 주력과 역할이 같은 챔피언", "숙련도가 높은 챔피언" 세 갈래다.</li>
+</ul>
+
+<h4 style="font-size:18px;color:#0a0b0d;">챔피언 티어</h4>
+<p><img src="https://wgm.nori.day/static/blog/03-tier-list.jpg" alt="챔피언 티어 화면" style="max-width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+<p style="line-height:1.8;">2020년에 이 사이트를 만든 이유가 "상위 티어 통계는 하위 티어에게 도움이 안 된다"였다. 그래서 아이언–실버, 골드–플래티넘처럼 <b>티어 구간별로 따로</b> 집계한다. 게임 수가 적은 챔피언이 1위로 튀지 않도록 표본 수를 보정한 승률로 등급을 매긴다.</p>
+
+<h4 style="font-size:18px;color:#0a0b0d;">챔피언 정보</h4>
+<p><img src="https://wgm.nori.day/static/blog/04-champion.jpg" alt="챔피언 정보 화면" style="max-width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+<p style="line-height:1.8;">장점과 약점, 상대하기 쉬운·어려운 챔피언, 핵심 아이템과 룬, 게임 시간대별 승률을 보여 준다. 장단점은 Riot 공식 능력치와 공식 플레이 팁에, 직접 모은 데이터(30분 이후 승률, 상대 전적)를 더해서 만든다.</p>
+<p><img src="https://wgm.nori.day/static/blog/06-champion-index.jpg" alt="챔피언 목록 화면" style="max-width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+
+<h4 style="font-size:18px;color:#0a0b0d;">모바일</h4>
+<p style="text-align:center;"><img src="https://wgm.nori.day/static/blog/05-summoner-mobile.jpg" alt="모바일 소환사 분석 화면" style="max-width:360px;width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+
+<h4 style="font-size:18px;color:#0a0b0d;">2020년 화면과 비교</h4>
+<p><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FciirYQ%2FbtqBFwKvuJE%2FdTNEc4cMDu2zcGL3kgK6k0%2Fimg.png" alt="2020년 메인 화면" style="max-width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+<p><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FoVqCU%2FbtqBGZ58UYo%2FBdn9gNURZQ3UUjh2mXake0%2Fimg.png" alt="2020년 소환사 정보 화면" style="max-width:100%;border:1px solid #dee1e6;border-radius:8px;"></p>
+<p style="line-height:1.8;">위 두 장이 2020년 버전이다. 티어 엠블럼, MOST ONE, 최근 20게임 표 같은 구성은 그때 만든 것을 그대로 가져갔다.</p>
+
+<hr>
+
+<h3 style="font-size:21px;color:#0a0b0d;">AI로 해 보니 생각보다 간단했다</h3>
+
+<p style="line-height:1.8;">처음에 한 말은 "깃허브에 있는 프로젝트 받아서 폴더 하나 만들고 프로젝트 시작하면 안될까?"가 전부였다. 그 뒤로 AI가 한 일은 이렇다.</p>
+<ul style="line-height:1.8;">
+  <li>6년 전 코드를 읽고 문제부터 찾았다. 폐지된 Riot API, 깨진 op.gg 크롤러, 존재하지 않는 파일을 가리키는 배포 설정, 그리고 <b>공개 저장소에 그대로 올라가 있던 DB 비밀번호</b>까지.</li>
+  <li>Flask를 TypeScript로, MongoDB를 Supabase로 옮기고 Cloudflare에 배포했다.</li>
+  <li>디자인은 <code>npx getdesign@latest add coinbase</code> 한 줄로 받은 <code>DESIGN.md</code>를 기준으로 전부 새로 입혔다. 색, 글꼴, 간격, 버튼 모양 규칙이 문서 한 장에 있어서 AI가 그대로 따라 그렸다.</li>
+  <li>5분마다 티어별 경기를 모으는 자동 수집을 붙이고, 데이터가 차자 실제 화면을 캡처해 가며 겹침이나 색 문제를 직접 고쳤다.</li>
+</ul>
+<p style="line-height:1.8;">내가 한 일은 결정과 권한이 필요한 일뿐이었다. Riot API 키 발급, Supabase에 SQL 붙여 넣기, 대시보드 설정, 도메인 연결, 그리고 "무엇을 만들지" 고르기.</p>
+<p style="line-height:1.8;">가장 효과가 컸던 건 중간에 한 이 말이었다.</p>
+<blockquote style="border-left:4px solid #0052ff;margin:16px 0;padding:8px 16px;background:#f5f6f8;">진행하기 전에 전부 나에게 응답을 받고 바이브코딩으로 한번에 진행하고싶어</blockquote>
+<p style="line-height:1.8;">그 뒤로 AI는 코드를 건드리기 전에 질문을 한꺼번에 가져왔고, 답을 정하면 끝까지 한 번에 진행했다. <b>결정은 먼저, 구현은 한 번에.</b> 이게 이번 작업의 요령이었다.</p>
+
+<hr>
+
+<h3 style="font-size:21px;color:#0a0b0d;">예전 코드를 뜯어고치는 재미</h3>
+
+<p style="line-height:1.8;">솔직히 기능을 새로 만드는 것보다 <b>6년 전 내 코드를 다시 보는 게</b> 더 재미있었다.</p>
+<ul style="line-height:1.8;">
+  <li><b>비밀번호가 공개 저장소에 있었다.</b> <code>.gitignore</code>에 <code>conf.py</code>를 넣어 놓고도, 이미 커밋된 파일은 그대로 올라가 있었다.</li>
+  <li><b>"승률 :" 칸이 비어 있었다.</b> 유저매칭 화면에 라벨만 만들고 값은 끝내 안 채웠더라. 이번에 Riot API로 채웠다.</li>
+  <li><b>6년 동안 <code>&lt;!DOCTYPE html&gt;</code>이 없었다.</b> 검색창이 8px 위로 치우친 원인을 찾다 보니 원본부터 빠져 있었다.</li>
+  <li><b>2020년 글에 적었던 한계를 이번에 풀었다.</b> 그때는 "데이터를 매번 가져와서 느리고, DB 비용이 부담된다"고 썼다. 이번에는 끝난 경기를 저장해 두고(같은 검색 2.3초 → 0.5초), 경기 원본(약 85KB) 대신 필요한 값만 남겨서(약 3.5KB) 무료 요금제 안에서 해결했다.</li>
+  <li><b>그 사이 게임도 바뀌었다.</b> 에메랄드 티어가 생겼고, 소환사 이름 대신 Riot ID를 쓰게 됐다.</li>
+</ul>
+
+<hr>
+
+<h3 style="font-size:21px;color:#0a0b0d;">서비스는 하지 않기로 했다</h3>
+
+<p style="line-height:1.8;">여기까지 만들고 나니 자연스럽게 "이걸 정식으로 운영해 볼까?"라는 생각이 들었다. 결론은 <b>서비스는 하지 않는다</b>이다.</p>
+<ul style="line-height:1.8;">
+  <li><b>롤 전적 분석은 이미 op.gg가 대명사처럼 자리 잡았다.</b> 친구 전적이 궁금하면 다들 습관처럼 op.gg부터 연다. 비슷한 기능을 하나 더 만든다고 그 습관이 바뀌지는 않는다.</li>
+  <li><b>데이터 규모가 다르다.</b> 내 사이트는 한 시간에 경기 약 100개를 모은다. 티어 구간별 통계가 의미 있으려면 훨씬 많은 데이터가 필요하고, 그만큼 API 한도와 저장 비용이 든다.</li>
+  <li><b>운영은 만드는 것과 다른 일이다.</b> 정식 서비스를 하려면 Riot Production 키 심사를 받아야 하고, 패치마다 데이터를 관리하고, 장애에 대응해야 한다. 개인 사이드 프로젝트로 감당하기엔 부담이 크다.</li>
+</ul>
+<p style="line-height:1.8;">그래서 WGM.GG는 <b>포트폴리오이자 학습 기록</b>으로 남기기로 했다. 지금은 개발용 키로 돌고 있어서, 키가 만료되면 검색이 멈출 수 있다.</p>
+
+<hr>
+
+<h3 style="font-size:21px;color:#0a0b0d;">마무리</h3>
+
+<p style="line-height:1.8;">6년 전에는 기능 하나 붙이는 데 며칠씩 걸렸는데, 이번에는 AI와 대화하면서 하룻밤 사이에 되살리고 갈아엎기까지 했다. <b>이 정도로 AI를 활용하면 예전 프로젝트도 간단하게 고칠 수 있다</b>는 걸 직접 확인했다.</p>
+<p style="line-height:1.8;">무엇보다 재미있었다. 예전 코드를 한 줄씩 다시 읽으면서 그때 무엇을 몰랐는지, 지금은 무엇을 아는지가 보였다. 서랍 속에 묵혀 둔 프로젝트가 있다면 한 번 꺼내서 AI와 같이 뜯어고쳐 보길 추천한다.</p>
+
+<hr>
+
+<p style="font-size:13px;color:#7c828a;line-height:1.6;"><i>WGM.GG isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</i></p>
+
+</article>
+<!-- ↑ 여기까지 본문 -->
+</div>
+
+<script>
+(function () {
+  var post = document.getElementById('post');
+  var status = document.getElementById('status');
+  var say = function (msg) { status.textContent = msg; };
+
+  // 기본 모드용: 화면에 보이는 그대로(서식 포함) 복사
+  document.getElementById('copy-rich').addEventListener('click', function () {
+    var html = post.innerHTML;
+    if (navigator.clipboard && window.ClipboardItem) {
+      navigator.clipboard.write([new ClipboardItem({
+        'text/html': new Blob([html], { type: 'text/html' }),
+        'text/plain': new Blob([post.innerText], { type: 'text/plain' })
+      })]).then(function () { say('복사했어요. 티스토리 기본 모드 편집기에 붙여 넣으세요.'); }, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var range = document.createRange();
+      range.selectNodeContents(post);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      sel.removeAllRanges();
+      say(ok ? '복사했어요. 티스토리 기본 모드 편집기에 붙여 넣으세요.' : '자동 복사가 막혀 있어요. 본문을 드래그해서 Cmd/Ctrl+C로 복사해 주세요.');
+    }
+  });
+
+  // HTML 모드용: 본문 HTML 소스 복사
+  document.getElementById('copy-html').addEventListener('click', function () {
+    var src = post.innerHTML.trim();
+    var done = function () { say('HTML 소스를 복사했어요. 티스토리 HTML 모드에 붙여 넣으세요.'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(src).then(done, legacy);
+    } else { legacy(); }
+    function legacy() {
+      var ta = document.createElement('textarea');
+      ta.value = src;
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      ok ? done() : say('자동 복사가 막혀 있어요. 이 파일을 텍스트 편집기로 열어 article 부분을 복사해 주세요.');
+    }
+  });
+})();
+</script>
+</body>
+</html>
